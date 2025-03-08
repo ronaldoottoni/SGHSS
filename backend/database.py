@@ -49,7 +49,7 @@ def init_db():
             idPlanoSaude INTEGER NOT NULL,
             profissao VARCHAR(030),
             regProfissional VARCHAR(030),
-            historigo VARCHAR(800)
+            historico VARCHAR(800)
         )
         '''
     )
@@ -189,7 +189,7 @@ def get_usuarios():
     c.execute('SELECT * FROM usuarios')
     rows = c.fetchall()
     conn.close()
-    return [dict(row) fpr row in rows]
+    return [dict(row) for row in rows]
 
 def add_usuario(idPessoa, login, senha, ocupacao):
     conn = db_connect()
@@ -232,7 +232,7 @@ def get_planosSaude():
     c.execute('SELECT * FROM planosSaude')
     rows = c.fetchall()
     conn.close()
-    return [dict(row) fpr row in rows]
+    return [dict(row) for row in rows]
 
 def add_planoSaude(descricao):
     conn = db_connect()
@@ -255,10 +255,43 @@ def val_planoSaude(idPlanoSaude):
     res = c.fetchone()
     conn.close()
     
-    if res:
-        return res["descricao"]
-    else:
-        return "Plano de Saúde não Encontrado"
+    return res["descricao"] if res else "Plano de Saúde não Encontrado"
+    
+def get_pessoas():
+    conn = db_connect()
+    c = conn.cursor()
+    c.execute('SELECT * FROM pessoas')
+    row = c.fetchall()
+    conn.close()
+    return [dict(row)for row in rows]
+
+def add_pessoa(nome, dataNascimento, sexo, celular, cep, pais, estado, cidade, bairro, endereco, numero, complemento, tipoSanguineo, idPlanoSaude, profissao, regProfissional, historigodataNascimento, sexo, celular, cep, pais, estado, cidade, bairro, endereco, numero, complemento, tipoSanguineo, idPlanoSaude, profissao, regProfissional, historico):
+    conn = db_connect()
+    c = conn.cursor()
+    c.execute('''
+              INSER INTO pessoas (nome, dataNascimento, sexo, celular, cep, pais, estado, cidade, bairro, endereco, numero, complemento, tipoSanguineo, idPlanoSaude, profissao, regProfissional, historigodataNascimento, sexo, celular, cep, pais, estado, cidade, bairro, endereco, numero, complemento, tipoSanguineo, idPlanoSaude, profissao, regProfissional, historico)
+              VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+              ''',
+              (nome, dataNascimento, sexo, celular, cep, pais, estado, cidade, bairro, endereco, numero, complemento, tipoSanguineo, idPlanoSaude, profissao, regProfissional, historigodataNascimento, sexo, celular, cep, pais, estado, cidade, bairro, endereco, numero, complemento, tipoSanguineo, idPlanoSaude, profissao, regProfissional, historico)
+            )
+    conn.commit()
+    conn.close()
+
+def del_pessoa(idPessoa):
+    conn = db_connect()
+    c = conn.cursor()
+    c.execute('DELETE FROM pessoas WHERE idPessoa = ?',(idPessoa,))
+    conn.commit()
+    conn.close()
+
+def val_pessoa(idPessoa):
+    conn = db_connect()
+    c = conn.cursor()
+    c.execute('SELECT * FROM pessoas WHERE idPessoa = ?', (idPessoa))
+    res = c.fetchone()
+    conn.close()
+    return dict(res) if res else "Pessoa não localizada"
+    
     
 # Inicializa o banco na primeira execução
 if __name__ == '__main__':
