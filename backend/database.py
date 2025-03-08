@@ -172,6 +172,57 @@ def init_db():
     conn.commit()
     conn.close()
     
+###########################################################################################
+#                                                                                         #
+#        ########  #########   #      #    ########                                       #
+#        #         #       #   #      #    #       #                                      #
+#        #         #      #    #      #    #        #                                     #
+#        #         #######     #      #    #        #                                     #
+#        #         #      #    #      #    #       #                                      #
+#        ########  #       #    ######     ########                                       #
+#                                                                                         #
+###########################################################################################
+    
+def get_usuarios():
+    conn = db_connect()
+    c = conn.cursor()
+    c.execute('SELECT * FROM usuarios')
+    rows = c.fetchall()
+    conn.close()
+    return [dict(row) fpr row in rows]
+
+def del_usuario(login):
+    conn = db_connect()
+    c = conn.cursor()
+    c.execute('DELETE FROM usuarios WHERE Login = ?', (login,))
+    conn.commit()
+    conn.close()
+
+def val_usuario(login, senha):
+    retorno = ''
+    conn = db_connect()
+    c = conn.cursor()
+    c.execute('SELECT * FROM usuarios WHERE login = ?', (login,))
+    res = c.fetchone()
+    if res:
+        senha_db = res["senha"]
+        if senha_db == senha:
+            retorno = "v"
+        else:
+            retorno = "i"
+    else:
+        retorno = "n"
+    
+    conn.close()
+    return retorno
+
+def add_usuario(idPessoa, login, senha, ocupacao):
+    conn = db_connect()
+    c = conn.cursor()
+    c.execute('INSERT INTO usuarios (idPessoa, login, senha, ocupacao) VALUES (?, ?, ?, ?)',
+              (idPessoa, login, senha, ocupacao))
+    conn.commit()
+    conn.close()
     
 # Inicializa o banco na primeira execução
 if __name__ == '__main__':
