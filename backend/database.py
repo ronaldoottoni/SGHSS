@@ -1,7 +1,12 @@
 import sqlite3
 
-def init_db():
+def db_connect():
     conn = sqlite3.connect('hospital.db')
+    conn.row_factory = sqlite3.Row
+    return conn
+
+def init_db():
+    conn = db_connect()    
     c = conn.cursor()
     
     # Criar a tabela de Planos de Saúde caso não exista
@@ -9,18 +14,18 @@ def init_db():
         '''
         CREATE TABLE IF NOT EXISTS planosSaude (
             idPlanoSaude INTEGER PRIMARY KEY AUTOINCREMENT,
-            nome VARCHR(050) NOT NULL,
+            nome VARCHR(050) NOT NULL
         )
         '''
     )
     # Incluir os primeiros Planos de Saúde caso tabela esteja vazia
     c.execute('SELECT COUNT(*) FROM planosSaude')
-    c.fetchone()[0] == 0:
-        c.executemany('INSERT INTO planosSaude (nome) VALUES(?)', [
-            ('SUS'),
-            ('Particular'),
-            ('Amil'),
-            ('Unimed')
+    if c.fetchone()[0] == 0:
+        c.executemany('INSERT INTO planosSaude (nome) VALUES (?)', [
+            ("SUS",),
+            ("Particular",),
+            ("Amil",),
+            ("Unimed",)
         ])
     
     # Criar a tabela de Pessoas se não existir
@@ -37,14 +42,14 @@ def init_db():
             estado VCARCHAR(002) NOT NULL,
             cidade VARCHAR(050) NOT NULL,
             bairro VARCHAR(025) NOT NULL,
-            endereco VARCHAR(050) NOT NUKLL,
+            endereco VARCHAR(050) NOT NULL,
             numero INTEGER,
             complemento VARCHAR(030), 
             tipoSanguineo VARCHAR(005),
             idPlanoSaude INTEGER NOT NULL,
             profissao VARCHAR(030),
             regProfissional VARCHAR(030),
-            historigo VARCHAR(800),
+            historigo VARCHAR(800)
         )
         '''
     )
@@ -94,9 +99,9 @@ def init_db():
     if c.fetchone()[0] == 0 :
         c.executemany('INSERT INTO modalidades (descricao, status) VALUES (?, ? )',
             [
-                ('Presencial', 'A')
-                ('Virtual', 'A')
-                ('Telefone', 'A')
+                ('Presencial', 'A'),
+                ('Virtual', 'A'),
+                ('Telefone', 'A'),
             ])
         
     # Criar a tabela de Acomodações, se tabela nao existir
@@ -118,15 +123,15 @@ def init_db():
     if c.fetchone()[0] == 0:
         c.executemany('INSERT INTO acomodacoes (ala, quarto, leito, descricao, status) VALUES (?, ?, ?, ?, ?)',
             [
-                (1, 0, 0, 'Enfermaria', 'A')
-                (1, 1, 0, 'Quarto 1', 'A')
-                (1, 1, 1, 'Leito 1', 'A')
-                (2, 0, 0, 'UTI', 'A')
-                (2, 1, 0, 'Quarto 1', 'A')
-                (2, 1, 1, 'Leito 1', 'A')
-                (3, 0, 0, 'Apartamento', 'A')
-                (3, 1, 0, 'Quarto 1', 'A')
-                (3, 1, 1, 'Leito 1', 'A')
+                (1, 0, 0, 'Enfermaria', 'A'),
+                (1, 1, 0, 'Quarto 1', 'A'),
+                (1, 1, 1, 'Leito 1', 'A'),
+                (2, 0, 0, 'UTI', 'A'),
+                (2, 1, 0, 'Quarto 1', 'A'),
+                (2, 1, 1, 'Leito 1', 'A'),
+                (3, 0, 0, 'Apartamento', 'A'),
+                (3, 1, 0, 'Quarto 1', 'A'),
+                (3, 1, 1, 'Leito 1', 'A'),
             ])
     
     # Criar a tabela de Registros, se não existir
@@ -146,7 +151,7 @@ def init_db():
             diagnostico VARCHAR(300) NOT NULL,
             tratamento VARCHAR(300) NOT NULL,
             observacoes VARCHAR(800),
-            idModalidade INTEGER NOT NULL,
+            idModalidade INTEGER NOT NULL
         )      
         ''')
     
@@ -167,3 +172,7 @@ def init_db():
     conn.commit()
     conn.close()
     
+    
+# Inicializa o banco na primeira execução
+if __name__ == '__main__':
+    init_db()
