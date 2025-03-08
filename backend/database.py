@@ -320,6 +320,34 @@ def val_modalidade(idModalidade):
     c.execute('SELECT * FROM modalidades WHERE idModalidade = ?', (idModalidade))
     res = c.fetchone()
     return dict(res) if res else "Modalidade não encontrada"
+
+def get_acomodacoes():
+    conn = db_connect()
+    c = conn.cursor()
+    c.execute('SELECT * FROM acomodacoes')
+    rows = c.fetchall()
+    conn.close()
+    return [dict(row) for row in rows]
+    
+def add_acomodacao():
+    conn = db_connect()
+    c = conn.cursor()
+    c.execute()
+    conn.close()
+    
+def del_acomodacao(idAcomodacao):
+    conn = db_connect()
+    c = conn.cursor()
+    c.execute('DELETE FROM acomodacoes WHERE idAcomodacao = ?', (idAcomodacao))
+    conn.close()
+    
+def val_acomodacao(idAcomodacao):
+    conn = db_connect()
+    c = conn.cursor()
+    c.execute('SELECT * FROM acomodacoes WHERE idAcomodacao = ?', (idAcomodacao))
+    res = c.fetchone()
+    conn.close()
+    return res if res else "Acomodação não cadastrada"
     
 # Inicializa o banco na primeira execução
 if __name__ == '__main__':
