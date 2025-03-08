@@ -212,6 +212,8 @@ def val_usuario(login, senha):
     c = conn.cursor()
     c.execute('SELECT * FROM usuarios WHERE login = ?', (login,))
     res = c.fetchone()
+    conn.close()
+    
     if res:
         senha_db = res["senha"]
         if senha_db == senha:
@@ -221,7 +223,7 @@ def val_usuario(login, senha):
     else:
         retorno = "n"
     
-    conn.close()
+    
     return retorno
 
 def get_planosSaude():
@@ -245,6 +247,18 @@ def del_planoSaude(idPlanoSaude):
     c.execute('DELETE FROM planosSaude WHERE idPlanoSaude = ?', (idPlanoSaude))
     conn.commit()
     conn.execute()
+
+def val_planoSaude(idPlanoSaude):
+    conn = db_connect()
+    c = conn.cursor()
+    c.execute('SELECT * FROM planosSaude WHERE idPlanoSaude = ?', (idPlanoSaude))
+    res = c.fetchone()
+    conn.close()
+    
+    if res:
+        return res["descricao"]
+    else:
+        return "Plano de Saúde não Encontrado"
     
 # Inicializa o banco na primeira execução
 if __name__ == '__main__':
