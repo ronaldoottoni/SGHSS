@@ -14,7 +14,7 @@ def init_db():
         '''
         CREATE TABLE IF NOT EXISTS planosSaude (
             idPlanoSaude INTEGER PRIMARY KEY AUTOINCREMENT,
-            nome VARCHR(050) NOT NULL
+            descricao VARCHR(050) NOT NULL
         )
         '''
     )
@@ -191,6 +191,14 @@ def get_usuarios():
     conn.close()
     return [dict(row) fpr row in rows]
 
+def add_usuario(idPessoa, login, senha, ocupacao):
+    conn = db_connect()
+    c = conn.cursor()
+    c.execute('INSERT INTO usuarios (idPessoa, login, senha, ocupacao) VALUES (?, ?, ?, ?)',
+              (idPessoa, login, senha, ocupacao))
+    conn.commit()
+    conn.close()
+
 def del_usuario(login):
     conn = db_connect()
     c = conn.cursor()
@@ -216,13 +224,27 @@ def val_usuario(login, senha):
     conn.close()
     return retorno
 
-def add_usuario(idPessoa, login, senha, ocupacao):
+def get_planosSaude():
     conn = db_connect()
     c = conn.cursor()
-    c.execute('INSERT INTO usuarios (idPessoa, login, senha, ocupacao) VALUES (?, ?, ?, ?)',
-              (idPessoa, login, senha, ocupacao))
+    c.execute('SELECT * FROM planosSaude')
+    rows = c.fetchall()
+    conn.close()
+    return [dict(row) fpr row in rows]
+
+def add_planoSaude(descricao):
+    conn = db_connect()
+    c = conn.cursor()
+    c.execute('INSERT INTO planosSaude (descricao) VALUES(?)'),(descricao,)
     conn.commit()
     conn.close()
+
+def del_planoSaude(idPlanoSaude):
+    conn = db_connect()
+    c = conn.cursor()
+    c.execute('DELETE FROM planosSaude WHERE idPlanoSaude = ?', (idPlanoSaude))
+    conn.commit()
+    conn.execute()
     
 # Inicializa o banco na primeira execução
 if __name__ == '__main__':
