@@ -291,7 +291,35 @@ def val_pessoa(idPessoa):
     res = c.fetchone()
     conn.close()
     return dict(res) if res else "Pessoa não localizada"
+
+def get_modalidades():
+    conn = db_connect()
+    c = conn.cursor()
+    c.execute('SELECT * FROM modalidades')
+    rows = c.fetchall()
+    conn.close()
+    return [dict(row) for row in rows]
     
+def add_modalidade(descricao, status):
+    conn = db_connect()
+    c = conn.cursor()
+    c.execute('INSERTO INTO modalidades (descricao, status) VALUES (?, ?)',
+              (descricao, status)
+            )
+    conn.commit()
+    conn.close()
+
+def del_validade(idModalidade):
+    conn = db_connect()
+    c = conn.cursor()
+    c.execute('DELETE FROM modalidades WHERE idModalidade = ?', (idModalidade))
+    
+def val_modalidade(idModalidade):
+    conn = db_connect()
+    c = conn.cursor()
+    c.execute('SELECT * FROM modalidades WHERE idModalidade = ?', (idModalidade))
+    res = c.fetchone()
+    return dict(res) if res else "Modalidade não encontrada"
     
 # Inicializa o banco na primeira execução
 if __name__ == '__main__':
