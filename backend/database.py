@@ -381,6 +381,39 @@ def val_registro(idRegistro):
     res = c.fetchone()
     conn.close()
     return res if res else 'Registro não encontrado'
+
+def get_medicagens():
+    conn = db_connect()
+    c = conn.cursor()
+    c.execute('SELECT * FROM medicagens')
+    rows = c.fetchall()
+    conn.close()
+    return [dict(row) for row in rows]
+
+def add_medicagem(idRegistro, idLotacao, horario, medicamento, dosagem, status):
+    conn = db_connect()
+    c = conn.cursor()
+    c.execute('''INSERT INTO medicagens (idRegistro, idLotacao, horario, medicamento, dosagem, status) 
+                 VALUES (?, ?, ?, ?, ?, ?)''',
+                 (idRegistro, idLotacao, horario, medicamento, dosagem, status)
+            )
+    return
+
+def del_medicagem(idMedicagem):
+    conn = db_connect()
+    c = conn.cursor()
+    c.execute('DELETE * FROM medicagens WHERE idMedicagem = ?', (idMedicagem))
+    conn.commit()
+    conn.close()
+    
+def val_medicagem(idMedicagem):
+    conn = db_connect()
+    c = conn.cursor()
+    c.execute('SELECT * FRO medicagens WHERE idMedicagem = ?', (idMedicagem))
+    res = c.fetchone()
+    conn.close()
+    return res if res else "Agendamento não encontrado"
+    
 # Inicializa o banco na primeira execução
 if __name__ == '__main__':
     init_db()
