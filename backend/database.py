@@ -265,14 +265,14 @@ def get_pessoas():
     conn.close()
     return [dict(row)for row in rows]
 
-def add_pessoa(nome, dataNascimento, sexo, celular, cep, pais, estado, cidade, bairro, endereco, numero, complemento, tipoSanguineo, idPlanoSaude, profissao, regProfissional, histori):
+def add_pessoa(nome, dataNascimento, sexo, celular, cep, pais, estado, cidade, bairro, endereco, numero, complemento, tipoSanguineo, idPlanoSaude, profissao, regProfissional, historico):
     conn = db_connect()
     c = conn.cursor()
     c.execute('''
-              INSER INTO pessoas (nome, dataNascimento, sexo, celular, cep, pais, estado, cidade, bairro, endereco, numero, complemento, tipoSanguineo, idPlanoSaude, profissao, regProfissional, historigodataNascimento, sexo, celular, cep, pais, estado, cidade, bairro, endereco, numero, complemento, tipoSanguineo, idPlanoSaude, profissao, regProfissional, historico)
+              INSER INTO pessoas (nome, dataNascimento, sexo, celular, cep, pais, estado, cidade, bairro, endereco, numero, complemento, tipoSanguineo, idPlanoSaude, profissao, regProfissional, historico)
               VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
               ''',
-              (nome, dataNascimento, sexo, celular, cep, pais, estado, cidade, bairro, endereco, numero, complemento, tipoSanguineo, idPlanoSaude, profissao, regProfissional, historigodataNascimento, sexo, celular, cep, pais, estado, cidade, bairro, endereco, numero, complemento, tipoSanguineo, idPlanoSaude, profissao, regProfissional)
+              (nome, dataNascimento, sexo, celular, cep, pais, estado, cidade, bairro, endereco, numero, complemento, tipoSanguineo, idPlanoSaude, profissao, regProfissional, historico)
             )
     conn.commit()
     conn.close()
