@@ -21,7 +21,7 @@ def init_db():
     # Incluir os primeiros Planos de Saúde caso tabela esteja vazia
     c.execute('SELECT COUNT(*) FROM planosSaude')
     if c.fetchone()[0] == 0:
-        c.executemany('INSERT INTO planosSaude (nome) VALUES (?)', [
+        c.executemany('INSERT INTO planosSaude (descricao) VALUES (?)', [
             ("SUS",),
             ("Particular",),
             ("Amil",),
@@ -265,7 +265,7 @@ def get_pessoas():
     conn.close()
     return [dict(row)for row in rows]
 
-def add_pessoa(nome, dataNascimento, sexo, celular, cep, pais, estado, cidade, bairro, endereco, numero, complemento, tipoSanguineo, idPlanoSaude, profissao, regProfissional, historigodataNascimento, sexo, celular, cep, pais, estado, cidade, bairro, endereco, numero, complemento, tipoSanguineo, idPlanoSaude, profissao, regProfissional, historico):
+def add_pessoa(nome, dataNascimento, sexo, celular, cep, pais, estado, cidade, bairro, endereco, numero, complemento, tipoSanguineo, idPlanoSaude, profissao, regProfissional, historigodataNascimento):
     conn = db_connect()
     c = conn.cursor()
     c.execute('''
@@ -348,7 +348,39 @@ def val_acomodacao(idAcomodacao):
     res = c.fetchone()
     conn.close()
     return res if res else "Acomodação não cadastrada"
+
+def get_registros():
+    conn = db_connect()
+    c = conn.cursor()
+    c.execute('SELECT * FROM registros')
+    rows = c.fetchall()
+    conn.close()
+    return [dict(row) for row in rows]
     
+def add_registro(idPesoa, tipoRegistro, idProfissional, dataEntrada, dataSaida, dataRetorno, idAcomodacao, sinaisVitais, sintomas, diagnostico, tratamento, observacoes, idModalidade):
+    conn = db_connect()
+    c = conn.cursor()
+    c.execute('''INSERT INTO registros (idPesoa, tipoRegistro, idProfissional, dataEntrada, dataSaida, dataRetorno, idAcomodacao, sinaisVitais, sintomas, diagnostico, tratamento, observacoes, idModalidade)
+                        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)''',
+                (idPesoa, tipoRegistro, idProfissional, dataEntrada, dataSaida, dataRetorno, idAcomodacao, sinaisVitais, sintomas, diagnostico, tratamento, observacoes, idModalidade)
+            )
+    conn.commit()
+    conn.close()
+    
+def del_registro(idRegistro):
+    conn = db_connect()
+    c = conn.cursor()
+    c.execute('DELETE FROM registros WHERE idRegistro = ?', (idRegistro))
+    conn.commit()
+    conn.close()
+    
+def val_registro(idRegistro):
+    conn = db_connect()
+    c = conn.cursor()
+    c.execute('SELECT * FROM registros WHERE idRegistro = ?', (idRegistro))
+    res = c.fetchone()
+    conn.close()
+    return res if res else 'Registro não encontrado'
 # Inicializa o banco na primeira execução
 if __name__ == '__main__':
     init_db()
