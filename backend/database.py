@@ -261,18 +261,18 @@ def get_pessoas():
     conn = db_connect()
     c = conn.cursor()
     c.execute('SELECT * FROM pessoas')
-    row = c.fetchall()
+    rows = c.fetchall()
     conn.close()
     return [dict(row)for row in rows]
 
-def add_pessoa(nome, dataNascimento, sexo, celular, cep, pais, estado, cidade, bairro, endereco, numero, complemento, tipoSanguineo, idPlanoSaude, profissao, regProfissional, historigodataNascimento):
+def add_pessoa(nome, dataNascimento, sexo, celular, cep, pais, estado, cidade, bairro, endereco, numero, complemento, tipoSanguineo, idPlanoSaude, profissao, regProfissional, histori):
     conn = db_connect()
     c = conn.cursor()
     c.execute('''
               INSER INTO pessoas (nome, dataNascimento, sexo, celular, cep, pais, estado, cidade, bairro, endereco, numero, complemento, tipoSanguineo, idPlanoSaude, profissao, regProfissional, historigodataNascimento, sexo, celular, cep, pais, estado, cidade, bairro, endereco, numero, complemento, tipoSanguineo, idPlanoSaude, profissao, regProfissional, historico)
               VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
               ''',
-              (nome, dataNascimento, sexo, celular, cep, pais, estado, cidade, bairro, endereco, numero, complemento, tipoSanguineo, idPlanoSaude, profissao, regProfissional, historigodataNascimento, sexo, celular, cep, pais, estado, cidade, bairro, endereco, numero, complemento, tipoSanguineo, idPlanoSaude, profissao, regProfissional, historico)
+              (nome, dataNascimento, sexo, celular, cep, pais, estado, cidade, bairro, endereco, numero, complemento, tipoSanguineo, idPlanoSaude, profissao, regProfissional, historigodataNascimento, sexo, celular, cep, pais, estado, cidade, bairro, endereco, numero, complemento, tipoSanguineo, idPlanoSaude, profissao, regProfissional)
             )
     conn.commit()
     conn.close()
@@ -393,6 +393,7 @@ def get_medicagens():
 def add_medicagem(idRegistro, idLotacao, horario, medicamento, dosagem, status):
     conn = db_connect()
     c = conn.cursor()
+    # Aplicar as instruções para calcular horários de cada medicação conforme tratamento
     c.execute('''INSERT INTO medicagens (idRegistro, idLotacao, horario, medicamento, dosagem, status) 
                  VALUES (?, ?, ?, ?, ?, ?)''',
                  (idRegistro, idLotacao, horario, medicamento, dosagem, status)
