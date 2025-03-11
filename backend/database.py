@@ -500,7 +500,7 @@ def consultar_modalidade(idModalidade):
 
 
 ##############################################################################################
-def get_acomodacoes():
+def listar_acomodacoes():
     conn = db_connect()
     c = conn.cursor()
     c.execute("SELECT * FROM acomodacoes")
@@ -509,21 +509,21 @@ def get_acomodacoes():
     return [dict(row) for row in rows]
 
 
-def add_acomodacao():
+def gravar_acomodacao():
     conn = db_connect()
     c = conn.cursor()
     c.execute()
     conn.close()
 
 
-def del_acomodacao(idAcomodacao):
+def deletar_acomodacao(idAcomodacao):
     conn = db_connect()
     c = conn.cursor()
     c.execute("DELETE FROM acomodacoes WHERE idAcomodacao = ?", (idAcomodacao))
     conn.close()
 
 
-def val_acomodacao(idAcomodacao):
+def consultar_acomodacao(idAcomodacao):
     conn = db_connect()
     c = conn.cursor()
     c.execute("SELECT * FROM acomodacoes WHERE idAcomodacao = ?", (idAcomodacao))
@@ -533,7 +533,7 @@ def val_acomodacao(idAcomodacao):
 
 
 ##############################################################################################
-def get_registros():
+def listar_registros():
     conn = db_connect()
     c = conn.cursor()
     c.execute("SELECT * FROM registros")
@@ -542,7 +542,7 @@ def get_registros():
     return [dict(row) for row in rows]
 
 
-def add_registro(
+def gravar_registro(
     idPesoa,
     tipoRegistro,
     idProfissional,
@@ -582,7 +582,7 @@ def add_registro(
     conn.close()
 
 
-def del_registro(idRegistro):
+def deletar_registro(idRegistro):
     conn = db_connect()
     c = conn.cursor()
     c.execute("DELETE FROM registros WHERE idRegistro = ?", (idRegistro))
@@ -590,7 +590,7 @@ def del_registro(idRegistro):
     conn.close()
 
 
-def val_registro(idRegistro):
+def consultar_registro(idRegistro):
     conn = db_connect()
     c = conn.cursor()
     c.execute("SELECT * FROM registros WHERE idRegistro = ?", (idRegistro))
@@ -600,7 +600,7 @@ def val_registro(idRegistro):
 
 
 ##############################################################################################
-def get_medicagens():
+def listar_medicagens():
     conn = db_connect()
     c = conn.cursor()
     c.execute("SELECT * FROM medicagens")
@@ -609,7 +609,7 @@ def get_medicagens():
     return [dict(row) for row in rows]
 
 
-def add_medicagem(idRegistro, idLotacao, horario, medicamento, dosagem, status):
+def gravar_medicagem(idRegistro, idLotacao, horario, medicamento, dosagem, status):
     conn = db_connect()
     c = conn.cursor()
     # Aplicar as instruções para calcular horários de cada medicação conforme tratamento
@@ -621,7 +621,7 @@ def add_medicagem(idRegistro, idLotacao, horario, medicamento, dosagem, status):
     return
 
 
-def del_medicagem(idMedicagem):
+def deletar_medicagem(idMedicagem):
     conn = db_connect()
     c = conn.cursor()
     c.execute("DELETE * FROM medicagens WHERE idMedicagem = ?", (idMedicagem))
@@ -629,7 +629,7 @@ def del_medicagem(idMedicagem):
     conn.close()
 
 
-def val_medicagem(idMedicagem):
+def consultar_medicagem(idMedicagem):
     conn = db_connect()
     c = conn.cursor()
     c.execute("SELECT * FRO medicagens WHERE idMedicagem = ?", (idMedicagem))

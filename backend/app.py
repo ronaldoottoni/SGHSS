@@ -131,3 +131,124 @@ def deletar_modalidade():
     data = request.json
     resultado = db.deletar_modalidade(data["idModalidade"])
     return resultado
+
+
+######################################################
+#                  Acomodações                       #
+######################################################
+@app.route("/api/acomodacao", methods=["GET"])
+def listar_acomodacoes():
+    retorno = db.listar_acomodacoes()
+    return jsonify(retorno)
+
+
+@app.route("/api/acomodacao", methods=["GET"])
+def consultar_acomodacao():
+    data = request.json
+    resultado = db.consultar_acomodacao(data["idAcomodacao"])
+    return resultado
+
+
+@app.route("/api/acomodacao", methods=["POST"])
+def gravar_acomodacao():
+    data = request.json
+    id = data.get("idAcomodacao", " ")
+    resultado = db.gravar_acomodacao(
+        data["ala"], data["quarto"], data["leito"], data["descricao"], data["status"]
+    )
+    return resultado
+
+
+@app.route("/api/acomodacao", methods=["DELETE"])
+def deletar_acomodacao():
+    data = request.json
+    resultado = db.deletar_acomodacao(data["idAcomodacao"])
+    return resultado
+
+
+######################################################
+#                  Registros                         #
+######################################################
+@app.route("/api/registro", methods=["GET"])
+def listar_registros():
+    retorno = db.listar_registros()
+    return jsonify(retorno)
+
+
+@app.route("/api/registro", methods=["GET"])
+def consultar_registro():
+    data = request.json
+    resultado = db.consultar_registro(data["idRegistro"])
+    return jsonify(resultado)
+
+
+@app.route("/api/registro", methods=["POST"])
+def gravar_registro():
+    data = request.json
+    id = data.get("idRegistro", " ")
+    dataSaida = data.get("dataSaida", "0")
+    dataRetorno = data.get("dataRetorno", "0")
+    idAcomodacao = data.get("idAcomodacao", "0")
+    observacoes = data.get("observacoes")
+    resultado = db.gravar_registro(
+        id,
+        data["idPessoa"],
+        data["tipoRegistro"],
+        data["idProfissional"],
+        data["dataEntrada"],
+        dataSaida,
+        dataRetorno,
+        idAcomodacao,
+        data["sinaisVitais"],
+        data["sintomas"],
+        data["diagnostico"],
+        data["tratamento"],
+        observacoes,
+        data["idModalidade"],
+    )
+    return resultado
+
+
+@app.route("/api/registro", methods=["DELETE"])
+def deletar_registro():
+    data = request.json
+    resultado = db.deletar_registro(data["idRegistro"])
+    return resultado
+
+
+######################################################
+#             Agenda de Medicações                   #
+######################################################
+@app.route("/api/medicagem", methods=["GET"])
+def listar_medicagens():
+    resultado = db.listar_medicagens()
+    return jsonify(resultado)
+
+
+@app.route("/api/medicagem", methods=["GET"])
+def consutar_medicagem():
+    data = request.json
+    resultado = db.consultar_medicagem(data["idMedicagem"])
+    return jsonify(resultado)
+
+
+@app.route("/api/medicagem", methods=["POST"])
+def gravar_medicagem():
+    data = request.json
+    id = data.get("idMedicagem", " ")
+    resultado = db.gravar_medicagem(
+        id,
+        data["idRegistro"],
+        data["idLotacao"],
+        data["horario"],
+        data["medicamento"],
+        data["dosagem"],
+        data["status"],
+    )
+    return resultado
+
+@app.route("/api/medicagem", methods=['DELETE'])
+def deletar_medicagem():
+    data = request.json
+    resultado = db.deletar_medicagem(data['idMedicagem'])
+    return resultado
