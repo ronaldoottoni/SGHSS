@@ -94,8 +94,40 @@ def gravar_pessoa():
     )
     return resultado
 
-@app.route("/api/pessoa", methods=['DELETE'])
+
+@app.route("/api/pessoa", methods=["DELETE"])
 def deletar_pessoa():
     data = request.json
-    resultado = db.deletar_pessoa(data['idPessoa'])
+    resultado = db.deletar_pessoa(data["idPessoa"])
+    return resultado
+
+
+######################################################
+#              Modalidades de Atendimento            #
+######################################################
+@app.route("/api/modalidade", methods=["GET"])
+def listar_modalidades():
+    retorno = db.listar_modalidades()
+    return jsonify(retorno)
+
+
+@app.route("/api/modalidade", methods=["GET"])
+def consultar_modalidade():
+    data = request.json
+    resultado = db.consultar_modalidade(data["idModalidade"])
+    return resultado
+
+
+@app.route("/api/modalidade", methods=["POST"])
+def gravar_modalidade():
+    data = request.json
+    id = data.get("idModalidade", " ")
+    resultado = db.gravar_modalidade(id, data["descricao"], data["status"])
+    return resultado
+
+
+@app.route("/api/modalidade", methods=["DELETE"])
+def deletar_modalidade():
+    data = request.json
+    resultado = db.deletar_modalidade(data["idModalidade"])
     return resultado

@@ -254,6 +254,7 @@ def val_usuario(login, senha):
     return retorno
 
 
+##############################################################################################
 def listar_planosSaude():
     conn = db_connect()
     c = conn.cursor()
@@ -318,6 +319,7 @@ def validar_planoSaude(idPlanoSaude):
     return res["descricao"] if res else "Plano de Saúde não Encontrado"
 
 
+##############################################################################################
 def listar_pessoas():
     conn = db_connect()
     c = conn.cursor()
@@ -420,20 +422,11 @@ def deletar_pessoa(idPessoa):
         c.execute("DELETE FROM pessoas WHERE idPessoa = ?", (idPessoa,))
         conn.commit()
         if c.rowcount > 0:
-            return{
-                "status": "Sucessso!",
-                "message": "Pessoa deletada com sucesso!"
-            }
+            return {"status": "Sucessso!", "message": "Pessoa deletada com sucesso!"}
         else:
-            return{
-                "status": "Falha!",
-                "message": "Pessoa não deletada!"
-            }
+            return {"status": "Falha!", "message": "Pessoa não deletada!"}
     except sqlite3.Error as e:
-        return{
-            "status": "Erro!!",
-            "message": f"Erro ao deletar: {e}"
-        }
+        return {"status": "Erro!!", "message": f"Erro ao deletar: {e}"}
     finally:
         conn.close()
 
@@ -447,7 +440,8 @@ def consultar_pessoa(idPessoa):
     return dict(res) if res else "Pessoa não localizada"
 
 
-def get_modalidades():
+##############################################################################################
+def listar_modalidades():
     conn = db_connect()
     c = conn.cursor()
     c.execute("SELECT * FROM modalidades")
@@ -456,24 +450,48 @@ def get_modalidades():
     return [dict(row) for row in rows]
 
 
-def add_modalidade(descricao, status):
+def gravar_modalidade(id, descricao, status):
     conn = db_connect()
     c = conn.cursor()
-    c.execute(
-        "INSERTO INTO modalidades (descricao, status) VALUES (?, ?)",
-        (descricao, status),
-    )
-    conn.commit()
-    conn.close()
+    try:
+        if id is None or id == " ":
+            c.execute(
+                "INSERTO INTO modalidades (descricao, status) VALUES (?, ?)",
+                (descricao, status),
+            )
+        else:
+            c.execute(
+                "UPDATE modalidades SET descricao = ?, status = ? WHERE idModalidade = ?",
+                (descricao, status, id),
+            )
+        conn.commit()
+        if c.rowcount > 0:
+            return {"status": "Sucesso!", "message": "Modalidade gravada com Sucesso!"}
+        else:
+            return {"status": "Falha!", "message": "Modalidade não gravada!"}
+    except sqlite3.Error as e:
+        return {"status": "Erro!!", "message": f"Erro ao gravar: {e}"}
+    finally:
+        conn.close()
 
 
-def del_validade(idModalidade):
+def deletar_modalidade(idModalidade):
     conn = db_connect()
     c = conn.cursor()
-    c.execute("DELETE FROM modalidades WHERE idModalidade = ?", (idModalidade))
+    try:
+        c.execute("DELETE FROM modalidades WHERE idModalidade = ?", (idModalidade))
+        conn.commit()
+        if c.rowcount > 0:
+            return {"status": "Sucesso!", "message": "Modalidade deletada com Sucesso!"}
+        else:
+            return {"status": "Falha!", "message": "Modalidade não deletada!"}
+    except sqlite3.Error as e:
+        return {"status": "Erro!!", "message": f"Erro ao deletar: {e}"}
+    finally:
+        conn.close()
 
 
-def val_modalidade(idModalidade):
+def consultar_modalidade(idModalidade):
     conn = db_connect()
     c = conn.cursor()
     c.execute("SELECT * FROM modalidades WHERE idModalidade = ?", (idModalidade))
@@ -481,6 +499,7 @@ def val_modalidade(idModalidade):
     return dict(res) if res else "Modalidade não encontrada"
 
 
+##############################################################################################
 def get_acomodacoes():
     conn = db_connect()
     c = conn.cursor()
@@ -513,6 +532,7 @@ def val_acomodacao(idAcomodacao):
     return res if res else "Acomodação não cadastrada"
 
 
+##############################################################################################
 def get_registros():
     conn = db_connect()
     c = conn.cursor()
@@ -579,6 +599,7 @@ def val_registro(idRegistro):
     return res if res else "Registro não encontrado"
 
 
+##############################################################################################
 def get_medicagens():
     conn = db_connect()
     c = conn.cursor()
