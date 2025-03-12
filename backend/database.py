@@ -509,18 +509,45 @@ def listar_acomodacoes():
     return [dict(row) for row in rows]
 
 
-def gravar_acomodacao():
+def gravar_acomodacao(id, ala, quarto, leito, descricao, status):
     conn = db_connect()
     c = conn.cursor()
-    c.execute()
-    conn.close()
+    try:
+        if id is None or id == " ":
+            c.execute(
+                "INSERT INTO acomodacoes (ala, quarto, leito, descricao, status) VALUES (?, ?, ?, ?, ?)",
+                (ala, quarto, leito, descricao, status),
+            )
+        else:
+            c.execute(
+                "UPDATE acomodacoes SET ala = ?, quarto = ?, leito = ?, descricao = ?, status = ? WHERE idAcomodacoes = ?",
+                (ala, quarto, leito, descricao, status, id),
+            )
+        conn.commit()
+        if c.rowcount > 0:
+            return {"status": "Sucesso!", "message": "Acomodação gravada com Sucesso!"}
+        else:
+            return {"status": "Falha!", "message": "Acomodação não gravada!"}
+    except sqlite3.Error as e:
+        return {"status": "Erro!!", "message": f"Erro ao gravar: {e}"}
+    finally:
+        conn.close()
 
 
 def deletar_acomodacao(idAcomodacao):
     conn = db_connect()
     c = conn.cursor()
-    c.execute("DELETE FROM acomodacoes WHERE idAcomodacao = ?", (idAcomodacao))
-    conn.close()
+    try:
+        c.execute("DELETE FROM acomodacoes WHERE idAcomodacao = ?", (idAcomodacao))
+        conn.commit()
+        if c.rowcount > 0:
+            return {"status": "Sucesso!", "message": "Acomodação deletada com Sucesso!"}
+        else:
+            return {"status": "Falha!", "message": "Acomodação não deletada!"}
+    except sqlite3.Error as e:
+        return {"status": "Erro!", "message": f"Erro ao deletar: {e}"}
+    finally:
+        conn.close()
 
 
 def consultar_acomodacao(idAcomodacao):
@@ -543,7 +570,8 @@ def listar_registros():
 
 
 def gravar_registro(
-    idPesoa,
+    idRegistro,
+    idPessoa,
     tipoRegistro,
     idProfissional,
     dataEntrada,
@@ -559,35 +587,74 @@ def gravar_registro(
 ):
     conn = db_connect()
     c = conn.cursor()
-    c.execute(
-        """INSERT INTO registros (idPesoa, tipoRegistro, idProfissional, dataEntrada, dataSaida, dataRetorno, idAcomodacao, sinaisVitais, sintomas, diagnostico, tratamento, observacoes, idModalidade)
-                        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)""",
-        (
-            idPesoa,
-            tipoRegistro,
-            idProfissional,
-            dataEntrada,
-            dataSaida,
-            dataRetorno,
-            idAcomodacao,
-            sinaisVitais,
-            sintomas,
-            diagnostico,
-            tratamento,
-            observacoes,
-            idModalidade,
-        ),
-    )
-    conn.commit()
-    conn.close()
+    try:
+        if idRegistro is None or idRegistro == " ":
+            c.execute(
+                """INSERT INTO registros (idPessoa, tipoRegistro, idProfissional, dataEntrada, dataSaida, dataRetorno, idAcomodacao, sinaisVitais, sintomas, diagnostico, tratamento, observacoes, idModalidade)
+                                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)""",
+                (
+                    idPessoa,
+                    tipoRegistro,
+                    idProfissional,
+                    dataEntrada,
+                    dataSaida,
+                    dataRetorno,
+                    idAcomodacao,
+                    sinaisVitais,
+                    sintomas,
+                    diagnostico,
+                    tratamento,
+                    observacoes,
+                    idModalidade,
+                ),
+            )
+        else:
+            c.execute(
+                """
+                UPDATE registros SET idPessoa = ?, tipoRegistro = ?, idProfissional = ?, dataEntrada = ?, dataSaida = ?, dataRetorno = ?, idAcomodacao = ?, sinaisVitais = ?, sintomas = ?, diagnostico = ?, tratamento = ?, observacoes = ?, idModalidade = ? WHERE idRegistro = ?
+                """,
+                (
+                    idPessoa,
+                    tipoRegistro,
+                    idProfissional,
+                    dataEntrada,
+                    dataSaida,
+                    dataRetorno,
+                    idAcomodacao,
+                    sinaisVitais,
+                    sintomas,
+                    diagnostico,
+                    tratamento,
+                    observacoes,
+                    idModalidade,
+                    idRegistro,
+                ),
+            )
+        conn.commit()
+        if c.rowcount > 0:
+            return {"status": "Sucesso!", "message": "Registro gravado com sucesso!"}
+        else:
+            return {"status": "Falha!", "message": "Registro não gravado"}
+    except sqlite3.Error as e:
+        return {"status": "Erro!!", "message": f"Erro ao gravar: {e}"}
+    finally:
+        conn.close()
 
 
 def deletar_registro(idRegistro):
     conn = db_connect()
     c = conn.cursor()
-    c.execute("DELETE FROM registros WHERE idRegistro = ?", (idRegistro))
-    conn.commit()
-    conn.close()
+    try:
+        c.execute("DELETE FROM registros WHERE idRegistro = ?", (idRegistro))
+        conn.commit()
+        if c.rowcount > 0:
+            return {"status": "Sucesso!", "message": "Registro gravado com Sucesso!"}
+        else:
+            return {"status": "Falha!", "message": "Falha ao gravadar o registro!"}
+    except sqlite3.Error as e:
+        return {"status": "Erro!!", "message": f"Erro ao deletar: {e}"}
+    finally:
+        conn.close()
 
 
 def consultar_registro(idRegistro):
@@ -609,24 +676,58 @@ def listar_medicagens():
     return [dict(row) for row in rows]
 
 
-def gravar_medicagem(idRegistro, idLotacao, horario, medicamento, dosagem, status):
+def gravar_medicagem(
+    idMedicagem, idRegistro, idLotacao, horario, medicamento, dosagem, status
+):
     conn = db_connect()
     c = conn.cursor()
-    # Aplicar as instruções para calcular horários de cada medicação conforme tratamento
-    c.execute(
-        """INSERT INTO medicagens (idRegistro, idLotacao, horario, medicamento, dosagem, status) 
-                 VALUES (?, ?, ?, ?, ?, ?)""",
-        (idRegistro, idLotacao, horario, medicamento, dosagem, status),
-    )
-    return
+    try:
+        if idMedicagem is None or idMedicagem == " ":
+            c.execute(
+                """INSERT INTO medicagens (idRegistro, idLotacao, horario, medicamento, dosagem, status) 
+                         VALUES (?, ?, ?, ?, ?, ?)""",
+                (idRegistro, idLotacao, horario, medicamento, dosagem, status),
+            )
+        else:
+            c.execute(
+                """
+                UPDATE medicagens SET idRegistro = ?, idLotacao = ?, horario = ?, medicamento = ?, dosagem = ?, status = ? WHERE idMedicagem = ?
+                """,
+                (
+                    idRegistro,
+                    idLotacao,
+                    horario,
+                    medicamento,
+                    dosagem,
+                    status,
+                    idMedicagem,
+                ),
+            )
+        conn.commit()
+        if c.row_factory > 0:
+            return {"status": "Sucesso!", "message": "Medicagem gravada com Sucesso!"}
+        else:
+            return {"status": "Falha!", "message": "Medicagem não gravada"}
+    except sqlite3.Error as e:
+        return {"status": "Erro!!", "message": f"Erro ao gravar: {e}"}
+    finally:
+        conn.close()
 
 
 def deletar_medicagem(idMedicagem):
     conn = db_connect()
     c = conn.cursor()
-    c.execute("DELETE * FROM medicagens WHERE idMedicagem = ?", (idMedicagem))
-    conn.commit()
-    conn.close()
+    try:
+        c.execute("DELETE * FROM medicagens WHERE idMedicagem = ?", (idMedicagem))
+        conn.commit()
+        if c.rowcount > 0:
+            return {"status": "Sucesso!", "message": "Medicagem Deletada com Sucesso!"}
+        else:
+            return {"status": "Falha!", "message": "Falha do deletar!"}
+    except sqlite3.Error as e:
+        return {"status": "Erro!!", "message": f"Erro ao Deletar: {e}"}
+    finally:
+        conn.close()
 
 
 def consultar_medicagem(idMedicagem):
