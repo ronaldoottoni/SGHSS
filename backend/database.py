@@ -676,33 +676,46 @@ def listar_medicagens():
     return [dict(row) for row in rows]
 
 
+def inserir_medicagem(idRegistro, idLotacao, horario, medicamento, dosagem, status):
+    conn = db_connect()
+    c = conn.cursor()
+    try:
+        c.execute(
+            """INSERT INTO medicagens (idRegistro, idLotacao, horario, medicamento, dosagem, status) 
+                     VALUES (?, ?, ?, ?, ?, ?)""",
+            (idRegistro, idLotacao, horario, medicamento, dosagem, status),
+        )
+        conn.commit()
+        if c.row_factory > 0:
+            return {"status": "Sucesso!", "message": "Medicagem gravada com Sucesso!"}
+        else:
+            return {"status": "Falha!", "message": "Medicagem não gravada"}
+    except sqlite3.Error as e:
+        return {"status": "Erro!!", "message": f"Erro ao gravar: {e}"}
+    finally:
+        conn.close()
+
+
 def gravar_medicagem(
     idMedicagem, idRegistro, idLotacao, horario, medicamento, dosagem, status
 ):
     conn = db_connect()
     c = conn.cursor()
     try:
-        if idMedicagem is None or idMedicagem == " ":
-            c.execute(
-                """INSERT INTO medicagens (idRegistro, idLotacao, horario, medicamento, dosagem, status) 
-                         VALUES (?, ?, ?, ?, ?, ?)""",
-                (idRegistro, idLotacao, horario, medicamento, dosagem, status),
-            )
-        else:
-            c.execute(
-                """
-                UPDATE medicagens SET idRegistro = ?, idLotacao = ?, horario = ?, medicamento = ?, dosagem = ?, status = ? WHERE idMedicagem = ?
-                """,
-                (
-                    idRegistro,
-                    idLotacao,
-                    horario,
-                    medicamento,
-                    dosagem,
-                    status,
-                    idMedicagem,
-                ),
-            )
+        c.execute(
+            """
+            UPDATE medicagens SET idRegistro = ?, idLotacao = ?, horario = ?, medicamento = ?, dosagem = ?, status = ? WHERE idMedicagem = ?
+            """,
+            (
+                idRegistro,
+                idLotacao,
+                horario,
+                medicamento,
+                dosagem,
+                status,
+                idMedicagem,
+            ),
+        )
         conn.commit()
         if c.row_factory > 0:
             return {"status": "Sucesso!", "message": "Medicagem gravada com Sucesso!"}

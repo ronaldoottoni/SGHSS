@@ -1,4 +1,5 @@
 from flask import Flask, jsonify, request
+from datetime import datetime, timedelta, date, time
 import database as db
 
 app = Flask(__name__)
@@ -232,12 +233,11 @@ def consutar_medicagem():
     return jsonify(resultado)
 
 
-@app.route("/api/medicagem", methods=["POST"])
+@app.route("/api/medicagem", methods=["PUT"])
 def gravar_medicagem():
     data = request.json
-    id = data.get("idMedicagem", " ")
     resultado = db.gravar_medicagem(
-        id,
+        data["idMedicagem"],
         data["idRegistro"],
         data["idLotacao"],
         data["horario"],
@@ -247,8 +247,46 @@ def gravar_medicagem():
     )
     return resultado
 
-@app.route("/api/medicagem", methods=['DELETE'])
+
+@app.route("/api/medicagem", methods=["POST"])
+def inserir_medicagem():
+    data = request.json
+    id = data.get("idMedicagem", " ")
+
+    dataPri = data["dataPri"]
+    ano, mes, dia = map(int, dataPri.split("-"))
+    dataPri = date(year=ano, month=mes, day=dia)
+
+    horaPri = data["horaPri"]
+    hora, min = map(int, horaPri.split(":"))
+    horaPri = time(hour=hora, minute=min)
+
+    intervalo = int(data["intervalo"])
+    dosesDia = int(24 / intervalo)
+    qtdeDias = int(data["qtdeDias"])
+
+    dosesTotal = dosesDia * qtdeDias
+    dataDose = datetime.combine(dataPri, horaPri)
+
+    resultado = []
+    for x in range(dosesTotal):
+        if x > 0:
+            dataDose = dataDose + timedelta(hours=(intervalo))
+        gravacao = db.inserir_medicagem(
+            id,
+            data["idRegistro"],
+            data["idLotacao"],
+            dataDose,
+            data["medicamento"],
+            data["dosagem"],
+            data["status"],
+        )
+        resultado.append(gravacao)
+    return resultado
+
+
+@app.route("/api/medicagem", methods=["DELETE"])
 def deletar_medicagem():
     data = request.json
-    resultado = db.deletar_medicagem(data['idMedicagem'])
+    resultado = db.deletar_medicagem(data["idMedicagem"])
     return resultado
