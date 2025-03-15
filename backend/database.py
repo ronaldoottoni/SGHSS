@@ -11,6 +11,28 @@ def init_db():
     conn = db_connect()
     c = conn.cursor()
 
+    # Criar a tabela Instituição caso não exista
+    c.execute(
+        """
+        CREATE TABLE IF NOR EXISTS instituicao (
+            idInstituicao INTEGER PRIMARY KEY AUTOINCREMENT,
+            razaoSocial VARCHAR(50) NOT NULL,
+            nomeFantasia VARCHAR(50) NOT NULL,
+            cnpj INTEGER NOT NULL,
+            inscEstadual VARCHAR(20),
+            endereco VARCHAR(100) NOT NULL,
+            numero INTERGER,
+            complemento VARCHAR(100),
+            bairro VARCHAR(50) NOT NULL,
+            cidade VARCHAR(100) NOT NULL,
+            estado VARCHAR(2) NOT NULL,
+            tipoInstituicao INTEGER NOT NULL
+            telefone INTEGER NOT NULL,
+            email VARCHAR(100) NOT NULL,
+        )
+        """
+    )
+
     # Criar a tabela de Planos de Saúde caso não exista
     c.execute(
         """
@@ -126,9 +148,10 @@ def init_db():
         """
         CREATE TABLE IF NOT EXISTS acomodacoes(
             idAcomodacao INTEGER PRIMARY KEY AUTOINCREMENT,
-            ala INTEIRO NOT NULL,
-            quarto INTEIRO NOT NULL,
-            leito INTEIRO NOT NULL,
+            idInstituicao INTEGER NOT NULL,
+            ala INTEGER NOT NULL,
+            quarto INTEGER NOT NULL,
+            leito INTEGER NOT NULL,
             descricao VARCHAR(030) NOT NULL,
             status VARCHAR(001) NOT NULL
         )
@@ -158,6 +181,7 @@ def init_db():
         """
         CREATE TABLE IF NOT EXISTS registros(
             idRegistro INTEGER PRIMARY KEY AUTOINCREMENT,
+            ìdInstituicao INTEGER NOT NULL,
             idPessoa INTEGER NOT NULL,
             tipoRegistro VARCHAR(003) NOT NULL,
             idProfissional INTEGER NOT NULL,
