@@ -295,5 +295,5 @@ def deletar_medicagem():
 @app.route("/api/prontuario", methods=["GET"])
 def consultar_prontuario():
     data = request.json
-    resultado = db.consulta_prontuario()
+    resultado = db.consulta_prontuario(data["idPessoa"])
     return jsonify(resultado)
