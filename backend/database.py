@@ -751,6 +751,41 @@ def consultar_medicagem(idMedicagem):
     return res if res else "Agendamento não encontrado"
 
 
+##############################################################################################
+def consulta_prontuario(idPessoa):
+    conn = db_connect()
+    c = conn.cursor()
+    c.execute(
+        """
+            SELECT 
+                r.idRegistro, 
+                r.idEntrada, 
+                r.dataSaida,
+                r.tipoRegistro,
+                r.sinaisVitais,
+                r.sintomas,
+                r.diagnostico,
+                r.tratamento,
+                r.observacoes,
+                m.idMedicagem,
+                m.horario,
+                m.medicamento,
+                m.dosagem,
+                m.status
+            FROM
+                registros r
+            LEFT JOIN
+                medicagens m ON r.idRegistro = m.idRegistro
+            WHERE
+                r.idPessoa = ?
+            """,
+        (idPessoa),
+    )
+    res = c.fetchall()
+    conn.close()
+    return res if res else "Nenhum registro encontrado!"
+
+
 # Inicializa o banco na primeira execução
 if __name__ == "__main__":
     init_db()
