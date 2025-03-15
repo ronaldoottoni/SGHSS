@@ -239,7 +239,7 @@ def gravar_medicagem():
     resultado = db.gravar_medicagem(
         data["idMedicagem"],
         data["idRegistro"],
-        data["idLotacao"],
+        data["idAcomodacao"],
         data["horario"],
         data["medicamento"],
         data["dosagem"],
@@ -275,7 +275,7 @@ def inserir_medicagem():
         gravacao = db.inserir_medicagem(
             id,
             data["idRegistro"],
-            data["idLotacao"],
+            data["idAcomodacao"],
             dataDose,
             data["medicamento"],
             data["dosagem"],

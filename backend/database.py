@@ -181,7 +181,6 @@ def init_db():
         CREATE TABLE IF NOT EXISTS medicagens(
             idMedicagem INTEGER PRIMARY KEY AUTOINCREMENT,
             idRegistro INTEGER NOT NULL,
-            idLotacao INTEGER NOT NULL,
             horario DATETIME NOT NULL,
             medicamento VARCHAR(020) NOT NULL,
             dosagem VARCHAR(020) NOT NULL,
@@ -676,14 +675,14 @@ def listar_medicagens():
     return [dict(row) for row in rows]
 
 
-def inserir_medicagem(idRegistro, idLotacao, horario, medicamento, dosagem, status):
+def inserir_medicagem(idRegistro, idAcomodacao, horario, medicamento, dosagem, status):
     conn = db_connect()
     c = conn.cursor()
     try:
         c.execute(
-            """INSERT INTO medicagens (idRegistro, idLotacao, horario, medicamento, dosagem, status) 
+            """INSERT INTO medicagens (idRegistro, idAcomodacao, horario, medicamento, dosagem, status) 
                      VALUES (?, ?, ?, ?, ?, ?)""",
-            (idRegistro, idLotacao, horario, medicamento, dosagem, status),
+            (idRegistro, idAcomodacao, horario, medicamento, dosagem, status),
         )
         conn.commit()
         if c.row_factory > 0:
@@ -697,18 +696,18 @@ def inserir_medicagem(idRegistro, idLotacao, horario, medicamento, dosagem, stat
 
 
 def gravar_medicagem(
-    idMedicagem, idRegistro, idLotacao, horario, medicamento, dosagem, status
+    idMedicagem, idRegistro, idAcomodacao, horario, medicamento, dosagem, status
 ):
     conn = db_connect()
     c = conn.cursor()
     try:
         c.execute(
             """
-            UPDATE medicagens SET idRegistro = ?, idLotacao = ?, horario = ?, medicamento = ?, dosagem = ?, status = ? WHERE idMedicagem = ?
+            UPDATE medicagens SET idRegistro = ?, idAcomodacao = ?, horario = ?, medicamento = ?, dosagem = ?, status = ? WHERE idMedicagem = ?
             """,
             (
                 idRegistro,
-                idLotacao,
+                idAcomodacao,
                 horario,
                 medicamento,
                 dosagem,
