@@ -7,44 +7,10 @@ app = Flask(__name__)
 # Inicialização do banco de dados na chamada do App
 db.init_db()
 
+
 ######################################################
-#                                                    #
 #                Rotas para camada Web               #
-#                                                    #
 ######################################################
-
-
-######################################################
-#                 Planos de Saúde                    #
-######################################################
-@app.route("/api/planoSaude", methods=["GET"])
-def listar_planosSaude():
-    planos = db.listar_planosSaude()
-    return jsonify(planos)
-
-
-@app.route("/api/planoSaude", methods=["GET"])
-def consultar_planoSaude():
-    data = request.json
-    resultado = db.validar_planoSaude(data["idPlanoSaude"])
-    return resultado
-
-
-# Rota com dupla finalidade, Inserir caso não exista e Atualizar caso exista
-# A tela terá apenas um botão para gravação.
-@app.route("/api/planoSaude", methods=["POST"])
-def gravar_planoSaude():
-    data = request.json
-    id = data.get("idPlanoSaude", " ")
-    resultado = db.gravar_planoSaude(id, data["descricao"])
-    return resultado
-
-
-@app.route("/api/planoSaude", methods=["DELETE"])
-def deletar_planoSaude():
-    data = request.json
-    resultado = db.deletar_planoSaude(data["idPlanoSaude"])
-    return resultado
 
 
 ######################################################
@@ -100,6 +66,39 @@ def gravar_pessoa():
 def deletar_pessoa():
     data = request.json
     resultado = db.deletar_pessoa(data["idPessoa"])
+    return resultado
+
+
+######################################################
+#                 Planos de Saúde                    #
+######################################################
+@app.route("/api/planoSaude", methods=["GET"])
+def listar_planosSaude():
+    planos = db.listar_planosSaude()
+    return jsonify(planos)
+
+
+@app.route("/api/planoSaude", methods=["GET"])
+def consultar_planoSaude():
+    data = request.json
+    resultado = db.validar_planoSaude(data["idPlanoSaude"])
+    return resultado
+
+
+# Rota com dupla finalidade, Inserir caso não exista e Atualizar caso exista
+# A tela terá apenas um botão para gravação.
+@app.route("/api/planoSaude", methods=["POST"])
+def gravar_planoSaude():
+    data = request.json
+    id = data.get("idPlanoSaude", " ")
+    resultado = db.gravar_planoSaude(id, data["descricao"])
+    return resultado
+
+
+@app.route("/api/planoSaude", methods=["DELETE"])
+def deletar_planoSaude():
+    data = request.json
+    resultado = db.deletar_planoSaude(data["idPlanoSaude"])
     return resultado
 
 

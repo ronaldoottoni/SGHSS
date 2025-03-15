@@ -457,10 +457,18 @@ def deletar_pessoa(idPessoa):
 def consultar_pessoa(idPessoa):
     conn = db_connect()
     c = conn.cursor()
-    c.execute("SELECT * FROM pessoas WHERE idPessoa = ?", (idPessoa))
-    res = c.fetchone()
-    conn.close()
-    return dict(res) if res else "Pessoa não localizada"
+    try:
+        c.execute("SELECT * FROM pessoas WHERE idPessoa = ?", (idPessoa))
+        res = c.fetchone()
+        conn.close()
+        if res:
+            return dict(res)
+        else:
+            return {"status": "Falha!", "message": "Pessoa não localizada!"}
+    except sqlite3.Error as e:
+        return {"status": "Erro!!", "message": f"Erro ao consultar a Pessoa: {e}"}
+    finally:
+        conn.close()
 
 
 ##############################################################################################
